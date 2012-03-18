@@ -32,12 +32,14 @@ public class CeylonValidator implements Validator {
     }
     
     @Override
-    public boolean isValid(File file, int startLine, String source) {
+    public boolean isValid(File file, int startLine, String source, String check) {
         List<Error> errors;
         File tmpSrc = dumpSourceToFile(source);
         try {
             File out = tmpDir();
             try {
+                // TODO support values for 'check': parse, type and compile
+                // if no value then assume compile
                 errors = compileFile(tmpSrc, out);
             } finally {
                 delete(out);

@@ -18,7 +18,7 @@ public class Main {
             }
         };
         dirWalker.addVisitor(new FilteredFileVisitor(filter, visitor));
-        dirWalker.walk(new File("/home/tom/ceylon/ceylon-lang.org/documentation/1.0/tour/anonymous-member-classes.md"));
+        dirWalker.walk(new File("/home/tom/ceylon/ceylon-lang.org/documentation/1.0/reference"));
         
         int good = handler.getNumGood();
         int bad = handler.getNumBad();

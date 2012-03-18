@@ -66,13 +66,14 @@ public class MdCodeBlockHandler implements Handler {
         }
         Validator validator = getValidator(preAnnos.getLang());
         if (validator != null) {
-            if (preAnnos.isNoCheck()) {
+            String check = preAnnos.getCheck();
+            if ("none".equals(check)) {
                 numIgnored++;
                 out.println("Ignoring " + file + ":" + startLine);
             } else {
                 out.println("Validating " + file + ":" + startLine);
                 String preparedSource = prepareSource(this.preAnnos, this.block, postAnnos);
-                if (validator.isValid(file, startLine, preparedSource)) {
+                if (validator.isValid(file, startLine, preparedSource, check)) {
                     numGood++;
                 } else {
                     numBad++;
@@ -112,9 +113,9 @@ public class MdCodeBlockHandler implements Handler {
     
     public String prepareSource(AnnotationList preAnnos, String source, AnnotationList postAnnos) {
         // If this code block had an <!-- id:NAME --> annotation, save it for later use
-        String id = preAnnos.getAnnoValue(AnnotationType.ID);
+        String id = preAnnos.getAnnoValue(AnnotationType.ID, true);
         if (id != null) {
-            ids.put(id.trim(), source);
+            ids.put(id, source);
         }
         
         StringBuilder sb = new StringBuilder();

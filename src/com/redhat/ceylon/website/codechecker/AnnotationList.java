@@ -55,13 +55,10 @@ public class AnnotationList {
 
     public AnnotationList(List<String> comments) {
         for (String comment : comments) {
-            if (comment.trim().equals("no-check")) {
-                singleAnnosByKey.put(AnnotationType.NO_CHECK, new Annotation(AnnotationType.NO_CHECK, "true"));
-                continue;
-            }
             Annotation keyValue = parseAnnotation(comment);
             if (keyValue == null
                     || keyValue.getType() == null) {
+                // comment was not an annotation
                 continue;
             }
             annotationList.add(keyValue);
@@ -88,7 +85,10 @@ public class AnnotationList {
             return null;
         }
         AnnotationType type = AnnotationType.fromKey(split[0].trim());
-        Annotation annotation = new Annotation(type, split[1]);
+        Annotation annotation = null;
+        if (type != null) {
+            annotation = new Annotation(type, split[1]);
+        }
         return annotation;
     }
 
@@ -98,12 +98,20 @@ public class AnnotationList {
         return split;
     }
     
-    String getAnnoValue(AnnotationType type) {
+    String getAnnoValue(AnnotationType type, boolean trimmed) {
         if (type.isMultiValue()) {
             throw new RuntimeException();
         }
+        String result = null;
         Annotation keyValue = singleAnnosByKey.get(type);
-        return keyValue != null ? keyValue.getValue() : null;
+        if (keyValue != null) {
+            result = keyValue.getValue();
+            if (trimmed) {
+                result = result.trim();
+            }
+        }
+        
+        return result;
     }
     
     private List<String> getAnnoValues(AnnotationType type) {
@@ -113,12 +121,17 @@ public class AnnotationList {
         return multiAnnosByKey.get(type);
     }
     
-    public boolean isNoCheck() {
-        return singleAnnosByKey.containsKey(AnnotationType.NO_CHECK);
+    public String getCheck() {
+        String value = getAnnoValue(AnnotationType.CHECK, true);
+        if (value != null) {
+            String[] keyValue = keyValue(value);
+            return keyValue[0];
+        }
+        return null;
     }
 
     public String getLang() {
-        return getAnnoValue(AnnotationType.LANG);
+        return getAnnoValue(AnnotationType.LANG, true);
     }
    
     @Override

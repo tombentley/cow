@@ -9,7 +9,7 @@ public enum AnnotationType {
     ID("id", false),
     IMPLICIT_ID("implicit-id", false),
     CAT_ID("cat-id", true),
-    NO_CHECK("no-check", false);
+    CHECK("check", false);
     
     private static HashMap<String, AnnotationType> INSTANCES = new HashMap<String, AnnotationType>(10);
     static {
