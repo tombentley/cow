@@ -38,9 +38,20 @@ public class CeylonValidator implements Validator {
         try {
             File out = tmpDir();
             try {
-                // TODO support values for 'check': parse, type and compile
-                // if no value then assume compile
-                errors = compileFile(tmpSrc, out);
+                if (check == null
+                        || check.isEmpty()
+                        || check.equals("compile")) {
+                    errors = compileFile(tmpSrc, out);
+                } else if ("parse".equals(check)) {
+                    // TODO support just parsing the code
+                    return true;
+                } else if ("types".equals(check)) {
+                    // TODO support just type checking the code and 
+                    // maybe make that the default
+                    return true;
+                } else {
+                    throw new RuntimeException("Unknown check: " + check);
+                }
             } finally {
                 delete(out);
             }
@@ -49,12 +60,12 @@ public class CeylonValidator implements Validator {
         }
     
         if (!errors.isEmpty()) {
-            System.out.println("ERROR: Code starting on line " + startLine + " of "+ file + ":");
-            System.out.println(source);
+            out.println("ERROR: Code starting on line " + startLine + " of "+ file + ":");
+            out.println(source);
             for (Error error : errors) {
                 error.report(startLine);
             }
-            System.out.println();
+            out.println();
         }
         
         return errors.isEmpty();

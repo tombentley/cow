@@ -189,7 +189,7 @@ public class MdParsingVisitor implements FileVisitor {
     
     public static void main(String[] args) throws Exception {
         File reference = new File("/home/tom/ceylon/ceylon-lang.org/documentation/1.0/reference");
-        new MdParsingVisitor(new MdCodeBlockHandler(System.out)).parse(
+        new MdParsingVisitor(new MdCodeBlockHandler(System.out, true)).parse(
                 new File(reference, "/operator/multiply-assign.md")
         );
     }

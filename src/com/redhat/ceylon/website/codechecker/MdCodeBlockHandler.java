@@ -24,9 +24,11 @@ public class MdCodeBlockHandler implements Handler {
     private String block;
     private int numIgnored;
     private final PrintStream out;
+    private final boolean verbose;
     
-    public MdCodeBlockHandler(PrintStream out) {
+    public MdCodeBlockHandler(PrintStream out, boolean verbose) {
         this.out = out;
+        this.verbose = verbose;
         validators = new HashMap<String, Validator>(3);
         Validator validator = new CeylonValidator(out);
         validators.put(null, validator);
@@ -69,9 +71,13 @@ public class MdCodeBlockHandler implements Handler {
             String check = preAnnos.getCheck();
             if ("none".equals(check)) {
                 numIgnored++;
-                out.println("Ignoring " + file + ":" + startLine);
+                if (verbose) {
+                    out.println("Ignoring " + file + ":" + startLine);
+                }
             } else {
-                out.println("Validating " + file + ":" + startLine);
+                if (verbose) {
+                    out.println("Validating " + file + ":" + startLine);
+                }
                 String preparedSource = prepareSource(this.preAnnos, this.block, postAnnos);
                 if (validator.isValid(file, startLine, preparedSource, check)) {
                     numGood++;
